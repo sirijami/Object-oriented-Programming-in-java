@@ -6,9 +6,16 @@ import java.util.ArrayList;
 //import java.util.Comparator;
 import java.util.List;
 
+
+
+
+
+import module5.LandQuakeMarker;
+import module5.OceanQuakeMarker;
 //Processing library
 import processing.core.PApplet;
-
+import processing.core.PFont;
+import processing.core.PShape;
 //Unfolding libraries
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.marker.Marker;
@@ -16,6 +23,7 @@ import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.marker.SimplePointMarker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.providers.MBTilesMapProvider;
+import de.fhpotsdam.unfolding.providers.OpenStreetMap;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 
 //Parsing library
@@ -24,8 +32,8 @@ import parsing.ParseFeed;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author Sirisha Jami
+ * Date: May 23, 2015
  * */
 public class EarthquakeCityMap extends PApplet {
 
@@ -58,9 +66,10 @@ public class EarthquakeCityMap extends PApplet {
 		    earthquakesURL = "2.5_week.atom"; 	// Same feed, saved Aug 7, 2015, for working offline
 		}
 		else {
-			map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
-			// IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
-			//earthquakesURL = "2.5_week.atom";
+//			map = new UnfoldingMap(this, 200, 50, 700, 500, new Google.GoogleMapProvider());
+			map = new UnfoldingMap(this, 200, 50, 700, 500, new OpenStreetMap.OpenStreetMapProvider());
+//			 IF YOU WANT TO TEST WITH A LOCAL FILE, uncomment the next line
+			earthquakesURL = "2.5_week.atom";
 		}
 		
 	    map.zoomToLevel(2);
@@ -75,19 +84,41 @@ public class EarthquakeCityMap extends PApplet {
 	    
 	    // These print statements show you (1) all of the relevant properties 
 	    // in the features, and (2) how to get one property and use it
-	    if (earthquakes.size() > 0) {
-	    	PointFeature f = earthquakes.get(0);
-	    	System.out.println(f.getProperties());
-	    	Object magObj = f.getProperty("magnitude");
-	    	float mag = Float.parseFloat(magObj.toString());
-	    	// PointFeatures also have a getLocation method
-	    }
+		    if (earthquakes.size() > 0) {
+		    	PointFeature f = earthquakes.get(0);
+		    	System.out.println(f.getProperties());
+		    	Object magObj = f.getProperty("magnitude");
+		    	float mag = Float.parseFloat(magObj.toString());
+		    	System.out.println(f.getLocation());		    	
+//		    	PointFeatures also have a getLocation method
+		    }
 	    
 	    // Here is an example of how to use Processing's color method to generate 
 	    // an int that represents the color yellow.  
 	    int yellow = color(255, 255, 0);
+	    int red = color(255,0,0);
+	    int blue = color(0,0,255);
 	    
 	    //TODO: Add code here as appropriate
+
+	    for (PointFeature eq: earthquakes) {
+	    	markers.add(new SimplePointMarker(eq.getLocation(), eq.getProperties()));
+	    }
+	    map.addMarkers(markers);
+	    for (Marker mk :markers) {
+	    	if ( (float) mk.getProperty("magnitude") < 4 ) {
+	    		mk.setColor(blue);
+	    		((SimplePointMarker) mk).setRadius(7);
+	    	}
+	    	else if((float)mk.getProperty("magnitude") > 4.0 && (float) mk.getProperty("magnitude") < 4.9 ) {
+	    		mk.setColor(yellow);
+	    		((SimplePointMarker) mk).setRadius(12);
+	    	}else {
+	    		mk.setColor(red);
+	    		((SimplePointMarker) mk).setRadius(16);
+	    	}
+	    }
+
 	}
 		
 	// A suggested helper method that takes in an earthquake feature and 
@@ -95,14 +126,15 @@ public class EarthquakeCityMap extends PApplet {
 	// TODO: Implement this method and call it from setUp, if it helps
 	private SimplePointMarker createMarker(PointFeature feature)
 	{
-		// finish implementing and use this method, if it helps.
+		// finish implementing and use this method, if it helps
 		return new SimplePointMarker(feature.getLocation());
+		
 	}
 	
 	public void draw() {
 	    background(10);
 	    map.draw();
-	    addKey();
+	    addKey();	    
 	}
 
 
@@ -111,6 +143,40 @@ public class EarthquakeCityMap extends PApplet {
 	private void addKey() 
 	{	
 		// Remember you can use Processing's graphics methods here
+		fill(255, 255, 204);
+		rect(10,50,150,300);
+		
+		String s = "Earthquake key";
+		fill(50);
+		text(s, 20, 60, 100, 80);
+		
+		fill(255,0,0);
+		ellipse(20, 105, 15, 15);
+		
+		String s1 = "5.0 + Magnitude";
+		fill(50);
+		text(s1, 40, 110);
+		
+		fill(255, 255, 0);
+		ellipse(20, 155, 9, 9);
+		
+		String s2 = "4.0 + Magnitude";
+		fill(50);
+		text(s2, 40, 160);
+		
+		fill(0,0,255);
+		ellipse(20, 200, 4, 4);
+		
+		String s3 = "Below 4.0";
+		fill(50);
+		text(s3, 40, 200);
+		
+		
+		
+
+
+		
+
 	
 	}
 }
