@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.providers.OpenStreetMap"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="processing.core.PApplet"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.UnfoldingMap"/>
 <fullyQualifiedTypeName name="de.fhpotsdam.unfolding.utils.MapUtils"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="processing.core.PShape"/>
+<fullyQualifiedTypeName name="processing.core.PFont"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.providers.Google.GoogleMapProvider"/>
+<fullyQualifiedTypeName name="module4.LandQuakeMarker"/>
+<fullyQualifiedTypeName name="module4.EarthquakeMarker"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.marker.SimplePointMarker"/>
+<fullyQualifiedTypeName name="module5.CityMarker"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="module6.EarthquakeMarker"/>
+<fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.data.PointFeature"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.data.Feature"/>
+<fullyQualifiedTypeName name="java.lang.Float"/>
+<fullyQualifiedTypeName name="module6.AirportMarker"/>
+<fullyQualifiedTypeName name="module6.CommonMarker"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.marker.Marker"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.geo.Location"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.marker.SimpleLinesMarker"/>
+<fullyQualifiedTypeName name="de.fhpotsdam.unfolding.data.ShapeFeature"/>
 </qualifiedTypeNameHistroy>

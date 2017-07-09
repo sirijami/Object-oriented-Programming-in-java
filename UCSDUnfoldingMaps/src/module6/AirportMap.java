@@ -1,10 +1,12 @@
 package module6;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
+import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.data.ShapeFeature;
 import de.fhpotsdam.unfolding.marker.Marker;
@@ -14,6 +16,7 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
 import de.fhpotsdam.unfolding.geo.Location;
 import parsing.ParseFeed;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 /** An applet that shows airports (and routes)
  * on a world map.  
@@ -27,12 +30,18 @@ public class AirportMap extends PApplet {
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	
+	//TODO Mouse event handler variables.
+	private CommonMarker lastSelected ;
+	private CommonMarker lastClicked;
+
+	
 	public void setup() {
 		// setting up PAppler
-		size(800,600, OPENGL);
+		size(1100,800, OPENGL);
 		
 		// setting up map and default events
-		map = new UnfoldingMap(this, 50, 50, 750, 550);
+//		map = new UnfoldingMap(this, 50, 50, 750, 550);
+		map = new UnfoldingMap(this, 250, 50, 750, 550);
 		MapUtils.createDefaultEventDispatcher(this, map);
 		
 		// get features from airport data
@@ -44,8 +53,8 @@ public class AirportMap extends PApplet {
 		
 		// create markers from features
 		for(PointFeature feature : features) {
+
 			AirportMarker m = new AirportMarker(feature);
-	
 			m.setRadius(5);
 			airportList.add(m);
 			
@@ -53,8 +62,7 @@ public class AirportMap extends PApplet {
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
 		
 		}
-		
-		
+
 		// parse route data
 		List<ShapeFeature> routes = ParseFeed.parseRoutes(this, "routes.dat");
 		routeList = new ArrayList<Marker>();
@@ -72,16 +80,14 @@ public class AirportMap extends PApplet {
 			
 			SimpleLinesMarker sl = new SimpleLinesMarker(route.getLocations(), route.getProperties());
 		
-			System.out.println(sl.getProperties());
+//			System.out.println(sl.getProperties());
 			
-			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-			//routeList.add(sl);
+			// TO SEE ALL ROUTES
+			routeList.add(sl);
 		}
-		
-		
-		
-		//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-		//map.addMarkers(routeList);
+
+
+		map.addMarkers(routeList);
 		
 		map.addMarkers(airportList);
 		
@@ -90,8 +96,88 @@ public class AirportMap extends PApplet {
 	public void draw() {
 		background(0);
 		map.draw();
+		addKey();		
+	}	
+	// TODO Chart describing about the map colors
+	private void addKey() {
 		
+        fill(255, 250, 240);		
+		int xbase = 25;
+		int ybase = 50;
+		
+		rect(xbase, ybase, 170, 170);
+		
+		fill(0);
+		textAlign(LEFT, CENTER);
+		textSize(20);
+		text("Airport Key", xbase+25, ybase+25);
+		
+		//Color representation
+		textSize(17);
+		fill(0, 0, 255);
+		text("Low Altitude", xbase+20, ybase+70);
+		
+		fill(0, 255, 0);
+		text("Moderate altitude", xbase+20, ybase+100);
+		
+		fill(255, 0, 0);
+		text("High altitude", xbase+20, ybase+130);
+			
 	}
+
+	//TODO The mouseMoved event handler to check whether any marker is selected or not. 	
+	@Override 
+	public void mouseMoved(){
+		if(lastSelected != null){
+			lastSelected.setSelected(false);
+			lastSelected = null;
+		}
+
+		selectMarkerOnHover(airportList);
+	}
+	
+	//TODO Get the details/title about the hovered/selected marker
+	private void selectMarkerOnHover(List<Marker> markers) {
+		if(lastSelected != null){
+			return;
+		}
+		for(Marker m : markers) {
+			if(m.isInside(map, mouseX, mouseY)) {
+				lastSelected =  (CommonMarker) m;
+				m.setSelected(true);
+				return;
+			}
+		}	
+	}
+	
+	//TODO This event checks whether a marker is clicked or not
+	@Override
+	public void mouseClicked(){
+		if(lastClicked != null) {
+			lastClicked.setClicked(false);
+			lastClicked = null;
+		}
+		showMarker(airportList);		
+	}
+	
+	//TODO It show the clicked marker(airport source) and hides the remaining markers. 
+	private void showMarker(List<Marker> airportMarker) {
+		if(lastClicked != null){
+			return;
+		}
+		for(Marker am : airportMarker) {
+			if(am.isSelected() && am.isInside(map, mouseX, mouseY)) {
+				lastClicked = (CommonMarker) am;
+				for(Marker hm : airportMarker) {
+					if(hm != lastClicked) {
+						hm.setHidden(true);
+					}
+				}
+			}
+		}
+	
+	}
+
 	
 
 }

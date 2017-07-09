@@ -5,6 +5,7 @@ import java.util.List;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.PointFeature;
 import de.fhpotsdam.unfolding.marker.SimpleLinesMarker;
+import processing.core.PConstants;
 import processing.core.PGraphics;
 
 /** 
@@ -15,6 +16,12 @@ import processing.core.PGraphics;
  *
  */
 public class AirportMarker extends CommonMarker {
+	public static final float ALTITUDE_LOW = 500;
+	public static final float ALTITUDE_MODERATE = 1000;
+	public static final float ALTITUDE_HIGH = 1500;
+	private static final int CORNER = 0;
+	
+
 	public static List<SimpleLinesMarker> routes;
 	
 	public AirportMarker(Feature city) {
@@ -24,19 +31,57 @@ public class AirportMarker extends CommonMarker {
 	
 	@Override
 	public void drawMarker(PGraphics pg, float x, float y) {
-		pg.fill(11);
-		pg.ellipse(x, y, 5, 5);
-		
+		//TODO call the helper methods to draw markers.
+		colorDetermine(pg);
+		pg.ellipse(x, y, 5, 5);			
+	}
+	
+
+	//TODO Change the color with respect to the altitude.
+	private void colorDetermine(PGraphics pg) {
+		Float altitude = getAltitude();
+		if(altitude <= ALTITUDE_LOW) {
+			pg.fill(0, 0 , 255);
+		} else if(altitude >= ALTITUDE_LOW && altitude <= ALTITUDE_MODERATE) {
+			pg.fill(0, 255, 0);
+		} else if(altitude >=  ALTITUDE_HIGH ) {
+			pg.fill(255,0 ,0);			
+		}
 		
 	}
 
+	
+	//TODO Show airport name, city and country details.
 	@Override
 	public void showTitle(PGraphics pg, float x, float y) {
-		 // show rectangle with title
-		
-		// show routes
-		
+
+		String airportName = getName() + ", " + getCity() + ", " + getCountry();
+		pg.pushStyle();
+		pg.rectMode(CORNER);
+		pg.fill(255,255,255);
+		pg.rect(x, y + 15, pg.textWidth(airportName) +6, 18, 5);	
+		pg.textAlign(PConstants.LEFT, PConstants.TOP);
+		pg.fill(0);
+		pg.text(airportName, x + 3 , y +18);				
+		pg.popStyle();
+
+     //show routes
 		
 	}
+	
+	//TODO Added getters for the airport details.
+	private String getCountry(){
+		return getStringProperty("country");
+	}
+	private String getName(){
+		return getStringProperty("name");
+	}
+	private String getCity(){
+		return getStringProperty("city");
+	}
+	private float getAltitude(){
+		return Float.parseFloat(getStringProperty("altitude").toString());
+	}
+	
 	
 }
